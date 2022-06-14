@@ -1,6 +1,6 @@
 ---
 layout: default
-title:  "MiniOrange Authentication Bypass via SAML Manipulation - CVE-2022-26493"
+title:  "Auth Bypass via SAML Attacks"
 author: Robert
 ---
 
