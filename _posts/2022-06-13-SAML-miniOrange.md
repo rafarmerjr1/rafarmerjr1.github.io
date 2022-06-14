@@ -6,8 +6,6 @@ author: Robert
 
 # MiniOrange Authentication Bypass via SAML Manipulation - CVE-2022-26493
 
-## Versions
-
 **Known Versions Affected**
 
 | Drupal 9 |  Drupal 8     | Drupal 7 |
@@ -24,7 +22,7 @@ of this vulnerability: Standard, Premium, and Enterprise.  It is advised to upgr
 This module has an authentication and authorization bypass vulnerability. Any individual with access to a HTTP request intercepting method is able to bypass 
 authentication and authorization - impersonating existing users and any existing role. All that is required is for the attacker to know (or guess) a valid username.
 
-Due to the SAML SP module's failure to verify *the existence* of a signature, any applications using the affected versions of miniOrange are effectively without authentication or authorization controls.
+Due to the SAML SP module's failure to verify *the existence* of a signature, any applications using the affected versions of miniOrange are effectively without authentication or authorization controls. Enabling certificate or signature checking in affected versions of MiniOrange will not mitigate the vulnerability.
 
 ## Explanation
 
@@ -60,7 +58,7 @@ accomplished by intercepting the SAML response from the IDP, modifying it in-tra
 were also possible.  As such, once a single SAML Assertion is obtained by an attacker, whether through Man-In-The-Middle attacks, Cross-site Scripting, etc. - it can be reused repeatedly.  If an attacker is able to intercept or obtain 
 a SAML assertion for an application, the application authentication and authorization logic can be bypassed. During testing, credential checks and two-factor authentication were both bypassed.  Likewise, I was able to assume any valid role within the application.
 
-![SAML Manipulation Attack](/_img/SAML_cap2.PNG)
+![SAML Manipulation Attack](/docs/assets/images/SAML_cap2.PNG)
 
 When modifying a SAML Assertion, we can capture the traffic in an HTTP Proxy like Burp Suite and view the SAML data. In order to bypass authentication in these versions
 of MiniOrange, and attacker only needs to know or guess an existing, valid username.  This can be accomplished through fuzzing different common usernames such as WPAdmin, Admin,
