@@ -30,7 +30,7 @@ miniOrange versions 8.x-30.3 and 8.x-30.4 do not properly check for the existenc
 SAML module can be configured to check the signature provided in SAML communications. If the signature displays indications of modification, the authentication
 request is denied.  
 
-However, removal of this signature will bypass the signature check entirely. As a result,an attacker may simply remove the signature in the SAML assertion from an IDP, modify the username and/or role, and forward the packet on to the web server.
+However, removal of this signature will bypass the signature check entirely. As a result, an attacker may simply remove the signature in the SAML assertion from an IDP, modify the username and/or role, and forward the packet on to the web server.
 The web server will interpret this manipulated package as a valid communication from the IDP, and allow the attacker to access the application with whatever user account and role he chooses.
 
 SAML (Security Assertion Markup Language) is an authentication standard that is used to transmit authentication data between two parties.  In the case of this vulnerability - 
