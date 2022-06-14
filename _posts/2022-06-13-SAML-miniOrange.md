@@ -14,7 +14,7 @@ author: Robert
 
 This vulnerability was discovered using Drupal 9.3.4 and 9.3.6, in miniOrange Premium versions 8.x-30.3 and 8.x-30.4. It has been confirmed to affect the Drupal SAML SP modules provided by miniOrange utilizing Okta.  Other authentication schemas and content management systems may also be affected.
 
-miniOrange Enterprise versions prior to version 40.4 (Drupal 8) and version 40.2 (Drupal 7) may be affected but were not tested. Xecurify has released patches for all variants of miniOrange since the discovery
+miniOrange Enterprise and Standard versions may be affected but were not tested. Xecurify has released patches for all variants of miniOrange since the discovery
 of this vulnerability: Standard, Premium, and Enterprise.  It is advised to upgrade to the newest available version of miniOrange, regardless of free or paid subscription service, as it is possible this vulnerability is present in multiple product and release versions of the miniOrange Drupal SAML SP module. 
 
 This vulnerability has not been identified in the free versions of miniOrange.
