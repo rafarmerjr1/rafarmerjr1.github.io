@@ -39,6 +39,8 @@ SAML (Security Assertion Markup Language) is an authentication standard that is 
 and in many authentication schemas - SAML allows a web application to be hosted indepently of the authorization service.  SAML works by facilitating communcation between the web application servers 
 and the authentication servers.  
 
+## Simple Example
+
 Let's look at a simplified example:
 
 A web application possesses a login button that redirects the user to an external authentication source.  As the user is redirected, a token or session cookie is often attached to their request.  The username and
@@ -63,18 +65,19 @@ a SAML assertion for an application, the application authentication and authoriz
 ![SAML Manipulation Attack](/docs/assets/images/SAML_cap2.PNG)
 
 When modifying a SAML Assertion, we can capture the traffic in an HTTP Proxy like Burp Suite and view the SAML data. In order to bypass authentication in these versions
-of MiniOrange, an attacker only needs to know or guess an existing, valid username.  This can be accomplished through fuzzing different common usernames such as WPAdmin, Admin,
-Drupal_admin, or through directly targeting known usernames. Once identified in the SAML Assertion, the username only needs to be changed.  SAML Assertions are encoded. Encoding is not encryption however, and it is trivial to decode.
+of MiniOrange, an attacker only needs to know (or guess) an existing, valid username.  This can be accomplished through fuzzing different common usernames such as WPAdmin, Admin,
+Drupal_admin, or through directly targeting known usernames. Once identified in the SAML Assertion, the username only needs to be replaced with the targeted username.  
 
-Once decoded, we can locate and modify the username.  Here we see I changed my username to an admin account:
+SAML Assertions are encoded. Encoding is not encryption however, and it is trivial to decode.
+Once decoded, we can locate and modify the username.  Here, I changed my user account to an admin account within the SAML Assertion:
 
 ![SAML Decoded](/docs/assets/images/evil_admin.png)
 
-If an attacker does not know or does not want to guess an existing username they can just as easily modify the user role. For example, an existing user may be malicious or an attacker may have valid credentials and want to elevate their privileges. In this instance, I modified my user role to "Admin".
+If an attacker does not know or does not want to guess an existing username they can modify the user role. An existing user may be malicious or an attacker may have valid credentials and want to elevate their privileges. To demonstrate, I modified my user role to "Admin":
 
 ![SAML Role](/docs/assets/images/SAML_role_1.PNG)
 
-After modifying the username and/or the user role, an attacker may remove the signature and forward the packet on to its final destination at the web application server. Here we are met with a response like this - indicating a successful authentication and a redirect to the webpage - now as an authorized user:
+After modifying the username and/or the user role, an attacker may remove the signature and forward the packet on to its final destination at the web application server. We will be met with a response like this one - indicating a successful authentication and a redirect to the webpage - now as an authenticated user:
 
 ![SAML Success](/docs/assets/images/success.png)
 
@@ -86,7 +89,7 @@ A similar vulnerability was discovered by another researcher - Cristian Guistini
 
 The bug Guistini discovered was identified to be related to poor enforcement of x509 Certificate values and SAML assertion signatures. Unfortunately, in the vulnerability I disclosed in early March and discuss here - the selection of these options makes no difference.  The signature existence check is bypassed regardless of user configuration in the premium versions of MiniOrange noted here.  
 
-The Premium, Standard, and Enterprise versions of MiniOrange are only available for download from Xecurity for paying customers.  The vulnerability descriped in this write-up was not assigned a Drupal Security Advisory, as it is only available through Xecurify, and not through the Drupal marketplace.
+The Premium, Standard, and Enterprise versions of MiniOrange are only available for download from Xecurity for paying customers.  The vulnerability described in this write-up was not assigned a Drupal Security Advisory, as it is only available through Xecurify, and not through the Drupal marketplace.
 
 Xecurify advises users to update to at least the following versions:
 
@@ -101,5 +104,5 @@ According to Xecurify's advisory:
 
 "If you are using an out-dated/vulnerable version of the SAML SP module, you can
 download the latest version by signing in to your miniOrange dashboard using the
-registered credentials."
+registered credentials".
 
