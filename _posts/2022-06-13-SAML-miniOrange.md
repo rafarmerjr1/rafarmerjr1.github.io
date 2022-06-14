@@ -66,15 +66,15 @@ Drupal_admin, or through directly targeting known usernames. Once identified in 
 
 Once decoded, we can locate and modify the username.  Here we see I changed my username to an admin account:
 
-![SAML Decoded](/_img/evil_admin.png)
+![SAML Decoded](/docs/assets/images/evil_admin.png)
 
 If an attacker does not know or does not want to guess an existing username they can just as easily modify the user role. For example, an existing user may be malicious or an attacker may have valid credentials and want to elevate their privileges. In this instance, I modified my user role to "Admin".
 
-![SAML Role](/_img/SAML_role_1.PNG)
+![SAML Role](/docs/assets/images/SAML_role_1.PNG)
 
 After modifying the username and/or the user role, an attacker may remove the signature and forward the packet on to its final destination at the web application server. Here we are met with a response like this - indicating a successful authentication and a redirect to the webpage - now as an authorized user:
 
-![SAML Success](/_img/success.png)
+![SAML Success](/docs/assets/images/success.png)
 
 ## Discussion
 
