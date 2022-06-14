@@ -87,6 +87,8 @@ The bug Guistini discovered was identified to be related to poor enforcement of 
 The Premium and Enterprise versions of MiniOrange are only available for download from Xecurity for paying customers.  The vulnerability descriped in this write-up was not assigned a Drupal Security Advisory, as it is only available through Xecurify, and not through the Drupal marketplace.
 
 Xecurify advises users to update to at least the following versions:
+
+
 | Drupal 9 |  Drupal 8     | Drupal 7 |
 | ----------- | ----------- | ----------- |
 | MiniOrange Standard 20.3 | MiniOrange Standard 20.3     | MiniOrange Standard 20.2      |
