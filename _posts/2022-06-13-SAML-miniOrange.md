@@ -95,3 +95,9 @@ Xecurify advises users to update to at least the following versions:
 | MiniOrange Premium 30.5 | MiniOrange Premium 30.5      | MiniOrange Premium 30.2       |
 | MiniOrange Enterprise 40.4 | MiniOrange Enterprise 40.4      | MiniOrange Enterprise 40.2      |
 
+According to Xecurify's advisory: 
+
+"If you are using an out-dated/vulnerable version of the SAML SP module, you can
+download the latest version by signing in to your miniOrange dashboard using the
+registered credentials."
+
