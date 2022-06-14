@@ -63,7 +63,7 @@ a SAML assertion for an application, the application authentication and authoriz
 ![SAML Manipulation Attack](/docs/assets/images/SAML_cap2.PNG)
 
 When modifying a SAML Assertion, we can capture the traffic in an HTTP Proxy like Burp Suite and view the SAML data. In order to bypass authentication in these versions
-of MiniOrange, and attacker only needs to know or guess an existing, valid username.  This can be accomplished through fuzzing different common usernames such as WPAdmin, Admin,
+of MiniOrange, an attacker only needs to know or guess an existing, valid username.  This can be accomplished through fuzzing different common usernames such as WPAdmin, Admin,
 Drupal_admin, or through directly targeting known usernames. Once identified in the SAML Assertion, the username only needs to be changed.  SAML Assertions are encoded. Encoding is not encryption however, and it is trivial to decode.
 
 Once decoded, we can locate and modify the username.  Here we see I changed my username to an admin account:
