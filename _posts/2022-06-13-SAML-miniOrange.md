@@ -4,29 +4,29 @@ title:  "Auth Bypass via SAML Attacks"
 author: Robert
 ---
 
-# MiniOrange Authentication Bypass via SAML Manipulation - CVE-2022-26493
+# miniOrange Authentication Bypass via SAML Manipulation - CVE-2022-26493
 
 **Known Versions Affected**
 
 | Drupal 9 |  Drupal 8     | Drupal 7 |
 | ----------- | ----------- | ----------- |
-| MiniOrange Premium < 30.5 | MiniOrange Premium < 30.5      | MiniOrange Premium < 30.2       |
+| miniOrange Premium < 30.5 | miniOrange Premium < 30.5      | miniOrange Premium < 30.2       |
 
-This vulnerability was discovered using Drupal 9.3.4 and 9.3.6, in MiniOrange Premium versions 8.x-30.3 and 8.x-30.4. It has been confirmed to affect the Drupal SAML SP modules provided by MiniOrange utilizing Okta.  Other authentication schemas and content management systems may also be affected.
+This vulnerability was discovered using Drupal 9.3.4 and 9.3.6, in miniOrange Premium versions 8.x-30.3 and 8.x-30.4. It has been confirmed to affect the Drupal SAML SP modules provided by miniOrange utilizing Okta.  Other authentication schemas and content management systems may also be affected.
 
-MiniOrange Enterprise versions prior to version 40.4 (Drupal 8) and version 40.2 (Drupal 7) may be affected but were not tested. Xecurify has released patches for all variants of MiniOrange since the discovery
-of this vulnerability: Standard, Premium, and Enterprise.  It is advised to upgrade to the newest available version of MiniOrange, regardless of free or paid subscription service. 
+miniOrange Enterprise versions prior to version 40.4 (Drupal 8) and version 40.2 (Drupal 7) may be affected but were not tested. Xecurify has released patches for all variants of miniOrange since the discovery
+of this vulnerability: Standard, Premium, and Enterprise.  It is advised to upgrade to the newest available version of miniOrange, regardless of free or paid subscription service. 
 
 ## Vulnerability
 
 This module has an authentication and authorization bypass vulnerability. Any individual with access to a HTTP request intercepting method is able to bypass 
 authentication and authorization - impersonating existing users and any existing role. All that is required is for the attacker to know (or guess) a valid username.
 
-Due to the SAML SP module's failure to verify *the existence* of a signature, any applications using the affected versions of miniOrange are effectively without authentication or authorization controls. Enabling certificate or signature checking in affected versions of MiniOrange will not mitigate the vulnerability.
+Due to the SAML SP module's failure to verify *the existence* of a signature, any applications using the affected versions of miniOrange are effectively without authentication or authorization controls. Enabling certificate or signature checking in affected versions of miniOrange will not mitigate the vulnerability.
 
 ## Explanation
 
-MiniOrange versions 8.x-30.3 and 8.x-30.4 do not properly check for the existence of a valid signature in SAML authentication communications.  Manipulating the contents of the SAML response from an Identity Provider (IDP) will affect the signature - rendering the SAML communication invalid.  This occurs because the MiniOrange 
+miniOrange versions 8.x-30.3 and 8.x-30.4 do not properly check for the existence of a valid signature in SAML authentication communications.  Manipulating the contents of the SAML response from an Identity Provider (IDP) will affect the signature - rendering the SAML communication invalid.  This occurs because the miniOrange 
 SAML module can be configured to check the signature provided in SAML communications. If the signature displays indications of modification, the authentication
 request is denied.  
 
