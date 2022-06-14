@@ -14,8 +14,7 @@ author: Robert
 | ----------- | ----------- | ----------- |
 | MiniOrange Premium < 30.5 | MiniOrange Premium < 30.5      | MiniOrange Premium < 30.2       |
 
-This vulnerability was discovered using Drupal 9.3.4 and 9.3.6, in miniOrange Premium versions 8.x-30.3 and 8.x-30.4. It has been confirmed to affect the Drupal
-SAML SP modules provided by MiniOrange.  Other authentication schemas may also be affected.
+This vulnerability was discovered using Drupal 9.3.4 and 9.3.6, in MiniOrange Premium versions 8.x-30.3 and 8.x-30.4. It has been confirmed to affect the Drupal SAML SP modules provided by MiniOrange utilizing Okta.  Other authentication schemas and content management systems may also be affected.
 
 MiniOrange Enterprise versions prior to version 40.4 (Drupal 8) and version 40.2 (Drupal 7) may be affected but were not tested. Xecurify has released patches for all variants of MiniOrange since the discovery
 of this vulnerability: Standard, Premium, and Enterprise.  It is advised to upgrade to the newest available version of MiniOrange, regardless of free or paid subscription service. 
@@ -29,12 +28,11 @@ Due to the SAML SP module's failure to verify *the existence* of a signature, an
 
 ## Explanation
 
-MiniOrange versions 8.x-30.3 and 8.x-30.4 do not properly check for the existence of a valid signature in SAML authentication communications.  Manipulating
-the contents of the SAML response from an Identity Provider (IDP) will affect the signature - rendering the SAML communication invalid.  This occurs because the MiniOrange 
+MiniOrange versions 8.x-30.3 and 8.x-30.4 do not properly check for the existence of a valid signature in SAML authentication communications.  Manipulating the contents of the SAML response from an Identity Provider (IDP) will affect the signature - rendering the SAML communication invalid.  This occurs because the MiniOrange 
 SAML module can be configured to check the signature provided in SAML communications. If the signature displays indications of modification, the authentication
 request is denied.  
 
-However, removal of this signature will bypass the signature check entirely. As a result,an attacker may simply remove the signature in the SAML response from an IDP, and modify the username and/or role and forward the packet on to the web server.
+However, removal of this signature will bypass the signature check entirely. As a result,an attacker may simply remove the signature in the SAML assertion from an IDP, modify the username and/or role, and forward the packet on to the web server.
 The web server will interpret this manipulated package as a valid communication from the IDP, and allow the attacker to access the application with whatever user account and role he chooses.
 
 SAML (Security Assertion Markup Language) is an authentication standard that is used to transmit authentication data between two parties.  In the case of this vulnerability - 
@@ -50,40 +48,48 @@ to validate that (a) the IDP and only the IDP generated the data and (b) that th
 
 This SAML Assertion is then forwarded from the IDP to the web application.  The web application will read this response (and signature) to confirm that the authentication was successful, obtain the correct username for the user, and apply the correct user role.
 
-In a functioning SAML schemas - any manipulation to the data in-trasit results in a small but significant change to the signature.  The signature contained in the SAML response is compared with what the web application possess
-and any differences between the two will result in the authentication attempt failing.  In the versions of MiniOrange discussed in this write-up, this functionality did not fail.
+In a functioning SAML schemas - any manipulation to the data in-trasit results in a small but significant change to the signature.  The signature contained in the SAML response is compared with what the web application possesses.
+Any differences between the two will result in the authentication attempt failing.  In the versions of MiniOrange discussed in this write-up, this functionality did not fail, and signature changes were correctly detected.
 
-However, the versions of MiniOrange investigated did not properly check for the existance of the signature.  If the signature was removed, the signature check failed open. This leaves the affected versions of MiniOrange vulnerabile
-to SAML manipulation attacks.
+However, the versions of MiniOrange investigated did not properly check for **the existance** of the signature.  If the signature was removed, the signature check failed open. This leaves the affected versions of MiniOrange vulnerable to SAML manipulation attacks. Furthermore, enabling signature checking and SAML signing makes no difference in the vulnerability. 
 
 ## SAML Manipulation
 
-During the authentication process, and attacker can modify the contents of a SAML assertion to impersonate users or obtain unauthorized role access. This is 
+During the authentication process, an attacker can modify the contents of a SAML assertion to impersonate users or obtain unauthorized role access. This is 
 accomplished by intercepting the SAML response from the IDP, modifying it in-transit, and forwarding it to the web application.  In the vulnerability discussed here, **SAML replay attacks**
-were also possible.  As such, once a single SAML Assertion is obtained by an attacker - it can be reused repeatedly.  If an attacker is able to intercept or obtain 
-a SAML assertion for an application, the application authentication and authorization logic can be bypassed.
+were also possible.  As such, once a single SAML Assertion is obtained by an attacker, whether through Man-In-The-Middle attacks, Cross-site Scripting, etc. - it can be reused repeatedly.  If an attacker is able to intercept or obtain 
+a SAML assertion for an application, the application authentication and authorization logic can be bypassed. During testing, credential checks and two-factor authentication were both bypassed.  Likewise, I was able to assume any valid role within the application.
 
 ![SAML Manipulation Attack](/_img/SAML_cap2.PNG)
 
 When modifying a SAML Assertion, we can capture the traffic in an HTTP Proxy like Burp Suite and view the SAML data. In order to bypass authentication in these versions
-of MiniOrange, and attacker only needs to know or guess an existing, valid username.  This can be fairly easily accomplished through fuzzing different common usernames such as WPAdmin, Admin,
-Drupal_admin, etc.  Once identified in the SAML Assertion, the username only needs to be changed.  SAML Assertions are encoded. Encoding is not encryption however, and it is trivial to decode.
+of MiniOrange, and attacker only needs to know or guess an existing, valid username.  This can be accomplished through fuzzing different common usernames such as WPAdmin, Admin,
+Drupal_admin, or through directly targeting known usernames. Once identified in the SAML Assertion, the username only needs to be changed.  SAML Assertions are encoded. Encoding is not encryption however, and it is trivial to decode.
 
 Once decoded, we can locate and modify the username.  Here we see I changed my username to an admin account:
 
 ![SAML Decoded](/_img/evil_admin.png)
 
-If an attacker does not know or does not want to guess an existing username they can just as easily modify the user role.  In this instance, I modified my user role to "Admin".
+If an attacker does not know or does not want to guess an existing username they can just as easily modify the user role. For example, an existing user may be malicious or an attacker may have valid credentials and want to elevate their privileges. In this instance, I modified my user role to "Admin".
 
 ![SAML Role](/_img/SAML_role_1.PNG)
 
-After modifying the username and/or the user role, an attacker may remove the signature and forward the packet on to its final destination at the web application server. In this instance, we are met with something like this: A successful authentication and a redirect to the webpage - now as an authorized user.
+After modifying the username and/or the user role, an attacker may remove the signature and forward the packet on to its final destination at the web application server. Here we are met with a response like this - indicating a successful authentication and a redirect to the webpage - now as an authorized user:
 
 ![SAML Success](/_img/success.png)
 
 ## Discussion
 
+This authentication bypass was confirmed through testing to affect MiniOrange Premium versions 8.x-30.3 and 8.x-30.4.  The vulnerability was disclosed to the vendor and to the Drupal security team on March 1st, 2022. The MiniOrange team at Xecurify published released a patch the same week.  Their disclosure statement can be found here: https://plugins.miniorange.com/wp-content/uploads/2022/05/CVE-miniOrange-SAML.pdf
 
+A similar vulnerability was discovered by another researcher - Cristian Guistini - in late 2021. The vulnerability disclosed by Guistini affected the free version of MiniOrange, version 8.x.2.22, which was available through the Drupal plugin marketplace. His write-up can be found here: https://blog.hacktivesecurity.com/index.php/2021/07/09/sa-contrib-2021-036-notsosaml-privilege-escalation-via-xml-signature-wrapping-on-minorangesaml-drupal-plugin/.  This vulnerability was assigned SA-CONTRIB-2021-036 by Drupal, as the affected software was available for download through Drupal.
 
+The bug Guistini discovered was identified to be related to poor enforcement of x509 Certificate values and SAML assertion signatures. Unfortunately, in the vulnerability I disclosed in early March and discuss - the selection of these options makes no difference.  The signature existence check is bypassed regardless of user configuration in the premium versions of MiniOrange noted here.  The Premium and Enterprise versions of MiniOrange are only available for download from Xecurity for paying customers.  
 
+Xecurify advises users to update to at least the following versions:
+| Drupal 9 |  Drupal 8     | Drupal 7 |
+| ----------- | ----------- | ----------- |
+| MiniOrange Standard 20.3 | MiniOrange Standard 20.3     | MiniOrange Standard 20.2      |
+| MiniOrange Premium 30.5 | MiniOrange Premium 30.5      | MiniOrange Premium 30.2       |
+| MiniOrange Enterprise 40.4 | MiniOrange Enterprise 40.4      | MiniOrange Enterprise 40.2      |
 
