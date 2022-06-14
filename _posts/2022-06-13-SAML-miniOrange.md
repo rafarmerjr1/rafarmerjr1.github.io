@@ -84,9 +84,9 @@ This authentication bypass was confirmed through testing to affect MiniOrange Pr
 
 A similar vulnerability was discovered by another researcher - Cristian Guistini - in late 2021. The vulnerability disclosed by Guistini affected the free version of MiniOrange, version 8.x.2.22, which was available through the Drupal plugin marketplace. His write-up can be found [here](https://blog.hacktivesecurity.com/index.php/2021/07/09/sa-contrib-2021-036-notsosaml-privilege-escalation-via-xml-signature-wrapping-on-minorangesaml-drupal-plugin/).  This vulnerability was assigned SA-CONTRIB-2021-036 by Drupal, as the affected software was available for download through Drupal.
 
-The bug Guistini discovered was identified to be related to poor enforcement of x509 Certificate values and SAML assertion signatures. Unfortunately, in the vulnerability I disclosed in early March and discuss - the selection of these options makes no difference.  The signature existence check is bypassed regardless of user configuration in the premium versions of MiniOrange noted here.  
+The bug Guistini discovered was identified to be related to poor enforcement of x509 Certificate values and SAML assertion signatures. Unfortunately, in the vulnerability I disclosed in early March and discuss here - the selection of these options makes no difference.  The signature existence check is bypassed regardless of user configuration in the premium versions of MiniOrange noted here.  
 
-The Premium and Enterprise versions of MiniOrange are only available for download from Xecurity for paying customers.  The vulnerability descriped in this write-up was not assigned a Drupal Security Advisory, as it is only available through Xecurify, and not through the Drupal marketplace.
+The Premium, Standard, and Enterprise versions of MiniOrange are only available for download from Xecurity for paying customers.  The vulnerability descriped in this write-up was not assigned a Drupal Security Advisory, as it is only available through Xecurify, and not through the Drupal marketplace.
 
 Xecurify advises users to update to at least the following versions:
 
